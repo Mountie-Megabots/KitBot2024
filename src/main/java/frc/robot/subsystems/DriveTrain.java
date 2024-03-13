@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 public class DriveTrain extends SubsystemBase {
@@ -31,8 +32,25 @@ public class DriveTrain extends SubsystemBase {
     topRight.follow(mainBotRight);
 
     mainBotRight.setInverted(true);
+   
 
 
+
+
+  }
+
+  public void enableBrake() {    
+      mainBotLeft.setIdleMode(IdleMode.kBrake);
+    mainBotRight.setIdleMode(IdleMode.kBrake);
+    topLeft.setIdleMode(IdleMode.kBrake);
+    topRight.setIdleMode(IdleMode.kBrake);
+  }
+
+   public void disableBrake() {    
+      mainBotLeft.setIdleMode(IdleMode.kCoast);
+    mainBotRight.setIdleMode(IdleMode.kCoast);
+    topLeft.setIdleMode(IdleMode.kCoast);
+    topRight.setIdleMode(IdleMode.kCoast);
   }
 
   /**

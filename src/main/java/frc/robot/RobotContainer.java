@@ -9,6 +9,10 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.LogitechExtreme3DProController;
+
+import com.revrobotics.CANSparkBase.IdleMode;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -22,8 +26,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
 
+  private boolean toggleRun;
+
   private final CommandXboxController driveXbox = new CommandXboxController(0);
   private final CommandXboxController functionXbox = new CommandXboxController(1);
+  private final LogitechExtreme3DProController controller = new LogitechExtreme3DProController(2);
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final DriveTrain m_DriveTrain = new DriveTrain();
@@ -51,8 +58,15 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    m_DriveTrain.setDefaultCommand(m_DriveTrain.driveCommand(driveXbox::getLeftY, driveXbox::getRightX));
-
+    
+    m_DriveTrain.setDefaultCommand(m_DriveTrain.driveCommand(controller::getJoystickY, controller::getJoystickZ));
+    if (controller.getButtonOne() && toggleRun){
+      m_DriveTrain.enableBrake();
+      toggleRun = false;
+    } else if (controller.getButtonOne() && !toggleRun) {
+      m_DriveTrain.disableBrake();
+      toggleRun = true;
+    }
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
