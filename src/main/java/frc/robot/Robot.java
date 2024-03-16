@@ -4,9 +4,15 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -18,6 +24,10 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+
+  private final Pigeon2 pigeon = new Pigeon2(21);
+
+  Rotation2d yaw;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -43,6 +53,12 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
+    //yaw = 0;
+    yaw = Rotation2d.fromDegrees(pigeon.getYaw().getValueAsDouble());
+
+
+      SmartDashboard.putNumber("Yaw", MathUtil.inputModulus(yaw.getDegrees(),-180,180));
+    
     CommandScheduler.getInstance().run();
   }
 

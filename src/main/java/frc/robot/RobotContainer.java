@@ -9,7 +9,12 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.LogitechExtreme3DProController;
+
+import com.revrobotics.CANSparkBase.IdleMode;
+
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -22,11 +27,17 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
 
+
+
   private final CommandXboxController driveXbox = new CommandXboxController(0);
   private final CommandXboxController functionXbox = new CommandXboxController(1);
+  private final LogitechExtreme3DProController controller = new LogitechExtreme3DProController(2);
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final DriveTrain m_DriveTrain = new DriveTrain();
+
+
+
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -52,6 +63,12 @@ public class RobotContainer {
    */
   private void configureBindings() {
     m_DriveTrain.setDefaultCommand(m_DriveTrain.driveCommand(driveXbox::getLeftY, driveXbox::getRightX));
+    m_DriveTrain.setDefaultCommand(m_DriveTrain.driveCommand(controller::getJoystickY, controller::getJoystickZ));
+
+    
+    Trigger trigOne = new Trigger(controller::getButtonOne).onTrue(new InstantCommand(m_DriveTrain::setBrake));
+    Trigger trigTwo = new Trigger(controller::getButtonTwo).onTrue(new InstantCommand(m_DriveTrain::setCoast));
+    
 
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
